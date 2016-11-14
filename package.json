@@ -17,7 +17,7 @@
     "babel-preset-es2015-native-modules": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "css-loader": "^0.23.1",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "file-loader": "^0.8.5",
     "node-sass": "^3.5.0-beta.1",
     "sass-loader": "^3.1.2",
