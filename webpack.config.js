@@ -65,14 +65,14 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        loader: 'file-loader',
+        use: 'file-loader',
         query: {
           name: '[name].[ext]'
         }
       },
       {
         test: /\.scss$/,
-        loaders: isProd ?
+        use: isProd ?
           extractCSS.extract({
             fallbackLoader: 'style-loader',
             loader: ['css-loader', 'sass-loader'],
@@ -82,7 +82,7 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loaders: [
+        use: [
           {
             loader: 'babel-loader',
             query: {
@@ -93,7 +93,7 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpg|jpeg\ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file-loader'
+        use: 'file-loader'
       }
     ],
   },
