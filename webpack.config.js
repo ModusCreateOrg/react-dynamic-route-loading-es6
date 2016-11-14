@@ -11,14 +11,10 @@ const staticsPath = path.join(__dirname, './static');
 const extractCSS = new ExtractTextPlugin('style.css');
 
 const plugins = [
-  new webpack.optimize.CommonsChunkPlugin({
-    name: 'vendor',
-    minChunks: Infinity,
-    filename: 'vendor.bundle.js'
-  }),
   new webpack.DefinePlugin({
     'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
   }),
+  new webpack.optimize.AggressiveSplittingPlugin(),
 ];
 
 if (isProd) {
@@ -51,21 +47,20 @@ if (isProd) {
 module.exports = {
   devtool: isProd ? 'source-map' : 'eval',
   context: sourcePath,
+
   entry: {
     js: [
       'index',
       'pages/Home'
     ],
-    vendor: [
-      'react',
-      'react-dom'
-    ]
   },
+
   output: {
     path: staticsPath,
-    filename: 'bundle.js',
+    filename: '[id]-[chunkhash].js',
     publicPath: '/',
   },
+
   module: {
     rules: [
       {
@@ -102,6 +97,7 @@ module.exports = {
       }
     ],
   },
+
   resolve: {
     extensions: ['.js', '.jsx'],
     modules: [
@@ -109,7 +105,21 @@ module.exports = {
       'node_modules'
     ]
   },
+
   plugins: plugins,
+  recordsOutputPath: path.join(__dirname, 'chunk.records.json'),
+
+  stats: {
+    assets: true,
+    children: false,
+    hash: false,
+    modules: false,
+    publicPath: false,
+    timings: true,
+    version: false,
+    warnings: true
+  },
+
   devServer: {
     contentBase: './client',
     historyApiFallback: true,
