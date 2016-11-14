@@ -11,10 +11,12 @@ module.exports = {
   context: path.join(__dirname, './client'),
   entry: {
     js: [
-      'index', 'pages/Home'
+      'index',
+      'pages/Home'
     ],
     vendor: [
-      'react', 'react-dom'
+      'react',
+      'react-dom'
     ]
   },
   output: {
