@@ -4,11 +4,53 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
-let extractCSS = new ExtractTextPlugin('style.css');
+
+const sourcePath = path.join(__dirname, './client');
+const staticsPath = path.join(__dirname, './static');
+
+const extractCSS = new ExtractTextPlugin('style.css');
+
+const plugins = [
+  new webpack.optimize.CommonsChunkPlugin({
+    name: 'vendor',
+    minChunks: Infinity,
+    filename: 'vendor.bundle.js'
+  }),
+  new webpack.DefinePlugin({
+    'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
+  }),
+];
+
+if (isProd) {
+  plugins.push(
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        screw_ie8: true,
+        conditionals: true,
+        unused: true,
+        comparisons: true,
+        sequences: true,
+        dead_code: true,
+        evaluate: true,
+        if_return: true,
+        join_vars: true,
+      },
+      output: {
+        comments: false
+      },
+    }),
+    extractCSS
+  );
+}
 
 module.exports = {
-  devtool: isProd ? 'hidden-source-map' : 'cheap-eval-source-map',
-  context: path.join(__dirname, './client'),
+  devtool: isProd ? 'source-map' : 'eval',
+  context: sourcePath,
   entry: {
     js: [
       'index',
@@ -20,29 +62,34 @@ module.exports = {
     ]
   },
   output: {
-    path: path.join(__dirname, './static'),
+    path: staticsPath,
     filename: 'bundle.js',
     publicPath: '/',
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.html$/,
-        loader: 'file',
+        loader: 'file-loader',
         query: {
           name: '[name].[ext]'
         }
       },
       {
         test: /\.scss$/,
-        loaders: extractCSS.extract(['css','sass'])
+        loaders: isProd ?
+          extractCSS.extract({
+            fallbackLoader: 'style-loader',
+            loader: ['css-loader', 'sass-loader'],
+          }) :
+          ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         loaders: [
           {
-            loader: 'babel',
+            loader: 'babel-loader',
             query: {
               cacheDirectory: true
             }
@@ -51,43 +98,24 @@ module.exports = {
       },
       {
         test: /\.(gif|png|jpg|jpeg\ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
-        loader: 'file'
+        loader: 'file-loader'
       }
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js', '.jsx'],
     modules: [
-      path.resolve('./client'),
+      sourcePath,
       'node_modules'
     ]
   },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity,
-      filename: 'vendor.bundle.js'
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
-      },
-      output: {
-        comments: false
-      },
-      sourceMap: false
-    }),
-    new webpack.DefinePlugin({
-      'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
-    }),
-    extractCSS,
-  ],
+  plugins: plugins,
   devServer: {
     contentBase: './client',
-    noInfo: true
+    historyApiFallback: true,
+    inject: true,
+    port: 3000,
+    compress: isProd,
+    stats: { colors: true },
   }
 };
