@@ -117,7 +117,11 @@ module.exports = {
     publicPath: false,
     timings: true,
     version: false,
-    warnings: true
+    warnings: true,
+    colors: {
+      yellow: '\u001b[33m',
+      green: '\u001b[32m'
+    }
   },
 
   devServer: {
