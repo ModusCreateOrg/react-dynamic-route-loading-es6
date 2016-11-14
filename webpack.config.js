@@ -8,7 +8,7 @@ const isProd = nodeEnv === 'production';
 const sourcePath = path.join(__dirname, './client');
 const staticsPath = path.join(__dirname, './static');
 
-const extractCSS = new ExtractTextPlugin('style.css');
+const extractCSS = new ExtractTextPlugin({ filename: 'style.css', disable: false, allChunks: true });
 
 const plugins = [
   new webpack.optimize.CommonsChunkPlugin({
