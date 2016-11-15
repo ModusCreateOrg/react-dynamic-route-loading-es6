@@ -5,6 +5,9 @@ import rootRoute from 'pages/routes';
 import 'index.html';
 import 'general.scss';
 
+console.log('STARTING');
+window.foo = '123';
+
 render(
   <Router history={browserHistory} routes={rootRoute} />,
   document.getElementById('root')

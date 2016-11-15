@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const InitialChunksPlugin = require('./InitialChunksPlugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -21,6 +22,7 @@ const plugins = [
     },
   }),
   new webpack.optimize.AggressiveSplittingPlugin(),
+  new InitialChunksPlugin({ publicPath: staticsPath, }),
 ];
 
 if (isProd) {
