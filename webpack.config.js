@@ -30,17 +30,11 @@ const plugins = [
         .filter(asset => chunkRegEx.test(asset.name))
         .map(asset => asset.name);
 
-      console.log('stats', chunks);
-
       const json = JSON.stringify(chunks);
 
       compilation.assets['chunks.json'] = {
-        source: function() {
-          return json;
-        },
-        size: function() {
-          return json.length;
-        }
+        source: () => json,
+        size: () => json.length
       };
 
       callback();
