@@ -19,6 +19,33 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
   }),
+  function() {
+    const compiler = this;
+    const chunkRegEx = /^chunk[.]/;
+    compiler.plugin('emit', function(compilation, callback) {
+      const chunks = compilation
+        .getStats()
+        .toJson()
+        .assets
+        .filter(asset => chunkRegEx.test(asset.name))
+        .map(asset => asset.name);
+
+      console.log('stats', chunks);
+
+      const json = JSON.stringify(chunks);
+
+      compilation.assets['chunks.json'] = {
+        source: function() {
+          return json;
+        },
+        size: function() {
+          return json.length;
+        }
+      };
+
+      callback();
+    });
+  },
 ];
 
 if (isProd) {
@@ -65,6 +92,7 @@ module.exports = {
   output: {
     path: staticsPath,
     filename: 'bundle.js',
+    chunkFilename: 'chunk.[chunkhash].js',
     publicPath: '/',
   },
   module: {
