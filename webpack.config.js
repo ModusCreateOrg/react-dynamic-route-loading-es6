@@ -58,7 +58,8 @@ module.exports = {
     ],
     vendor: [
       'react',
-      'react-dom'
+      'react-dom',
+      'react-helmet'
     ]
   },
   output: {
