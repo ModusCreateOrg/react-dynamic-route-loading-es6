@@ -1,26 +1,23 @@
 import React, { Component, PropTypes } from 'react';
 import Toolbar from 'components/Toolbar';
-import Helmet from 'react-helmet';
 import './style.scss';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      preload: []
-    };
-  }
+const tag = document.createElement('script');
+tag.async = 1;
 
+const addScript = src => {
+  tag.src = src;
+  document.head.appendChild(tag.cloneNode());
+};
+
+export default class App extends Component {
   componentDidMount() {
-    this.setState({
-      preload: window.__CHUNKS.map(chunk => ({ href: chunk, rel: 'preload', as: 'script' }))
-    });
+    window.__CHUNKS.forEach(addScript);
   }
 
   render() {
     return (
       <main className="viewport">
-        <Helmet link={this.state.preload} />
         <Toolbar />
         {this.props.children}
       </main>
