@@ -1,14 +1,11 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
 
 const sourcePath = path.join(__dirname, './client');
 const staticsPath = path.join(__dirname, './static');
-
-const extractCSS = new ExtractTextPlugin({ filename: 'style.css', disable: false, allChunks: true });
 
 const plugins = [
   new webpack.optimize.CommonsChunkPlugin({
@@ -43,8 +40,7 @@ if (isProd) {
       output: {
         comments: false
       },
-    }),
-    extractCSS
+    })
   );
 }
 
@@ -77,12 +73,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: isProd ?
-          extractCSS.extract({
-            fallbackLoader: 'style-loader',
-            loader: ['css-loader', 'sass-loader'],
-          }) :
-          ['style-loader', 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(js|jsx)$/,
@@ -116,6 +107,19 @@ module.exports = {
     inject: true,
     port: 3000,
     compress: isProd,
-    stats: { colors: true },
+    stats: {
+      assets: true,
+      children: false,
+      chunks: false,
+      hash: false,
+      modules: false,
+      publicPath: false,
+      timings: true,
+      version: false,
+      warnings: true,
+      colors: {
+        green: '\u001b[32m',
+      },
+    },
   }
 };
