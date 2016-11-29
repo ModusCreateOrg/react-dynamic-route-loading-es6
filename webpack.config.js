@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -8,17 +8,38 @@ const isProd = nodeEnv === 'production';
 const sourcePath = path.join(__dirname, './client');
 const staticsPath = path.join(__dirname, './static');
 
-const extractCSS = new ExtractTextPlugin({ filename: 'style.css', disable: false, allChunks: true });
-
+/**
+ * Plugins for dev and prod
+ */
 const plugins = [
+  /**
+   * Extract vendor libraries into a separate bundle
+   */
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
     minChunks: Infinity,
     filename: 'vendor.bundle.js'
   }),
+
+  /**
+   * Define NODE_ENV.
+   * When in production, this creates a smaller and faster bundle
+   */
   new webpack.DefinePlugin({
     'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
   }),
+
+  /**
+   * This is how we create index.html
+   */
+  new HtmlWebpackPlugin({
+    title: 'React Router + Webpack 2 + Dynamic Chunk Navigation',
+    template: `${sourcePath}/index.ejs`,
+  }),
+
+  /**
+   * Create a JSON file that contains file names of all chunks
+   */
   function() {
     const compiler = this;
     const chunkRegEx = /^chunk[.]/;
@@ -42,12 +63,23 @@ const plugins = [
   },
 ];
 
+
+/**
+ * Additional plugins just for prod
+ */
 if (isProd) {
   plugins.push(
+    /**
+     * Options to pass to all loaders
+     */
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false
     }),
+
+    /**
+     * Minify JS
+     */
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
@@ -64,8 +96,7 @@ if (isProd) {
       output: {
         comments: false
       },
-    }),
-    extractCSS
+    })
   );
 }
 
@@ -100,9 +131,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: isProd ?
-          extractCSS.extract(['css-loader', 'sass-loader']) :
-          ['style-loader', 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(js|jsx)$/,
