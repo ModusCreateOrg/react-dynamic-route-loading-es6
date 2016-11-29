@@ -43,22 +43,21 @@ const plugins = [
   function() {
     const compiler = this;
     const chunkRegEx = /^chunk[.]/;
-    compiler.plugin('emit', function(compilation, callback) {
-      const chunks = compilation
-        .getStats()
-        .toJson()
-        .assets
-        .filter(asset => chunkRegEx.test(asset.name))
-        .map(asset => asset.name);
+    compiler.plugin('compilation', function(compilation) {
+      compilation.plugin('html-webpack-plugin-before-html-processing', function(htmlPluginData, cb) {
+        // find all chunk file names
+        const extractedChunks = compilation
+          .chunks
+          .reduce((chunks, chunk) => chunks.concat(chunk.files), [])
+          .filter(chunk => chunkRegEx.test(chunk));
 
-      const json = JSON.stringify(chunks);
+        // create a stringified version of the array
+        const json = JSON.stringify(extractedChunks);
 
-      compilation.assets['chunks.json'] = {
-        source: () => json,
-        size: () => json.length
-      };
-
-      callback();
+        // inject chunks into the html
+        htmlPluginData.html = htmlPluginData.html.replace('window.__CHUNKS=[];', `window.__CHUNKS=${json}`);
+        cb(null, htmlPluginData);
+      });
     });
   },
 ];
@@ -165,6 +164,19 @@ module.exports = {
     inject: true,
     port: 3000,
     compress: isProd,
-    stats: { colors: true },
+    stats: {
+      assets: true,
+      children: false,
+      chunks: false,
+      hash: false,
+      modules: false,
+      publicPath: false,
+      timings: true,
+      version: false,
+      warnings: true,
+      colors: {
+        green: '\u001b[32m',
+      }
+    },
   }
 };

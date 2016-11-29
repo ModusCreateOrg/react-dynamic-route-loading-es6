@@ -12,11 +12,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    fetch('/chunks.json')
-      .then(res => res.json())
-      .then(chunks => this.setState({
-        preload: chunks.map(chunk => ({ href: chunk, rel: 'preload', as: 'script' }))
-      }));
+    this.setState({
+      preload: window.__CHUNKS.map(chunk => ({ href: chunk, rel: 'preload', as: 'script' }))
+    });
   }
 
   render() {
