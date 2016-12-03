@@ -1,12 +1,38 @@
 import App from 'containers/App';
 
-function errorLoading(err) {
-  console.error('Dynamic page loading failed', err);
-}
+/**
+ * Timestamp gets set when route begins loading
+ */
+let startTime;
 
-function loadRoute(cb) {
-  return (module) => cb(null, module.default);
-}
+/**
+ * Mark the time when router leaves a route
+ */
+const onLeave = () => startTime = Date.now();
+
+/**
+ * Calculate route transition time
+ */
+const calculateTransitionTime = () => {
+  const diff = ~~(Date.now() - startTime);
+  diff && console.log('%c Transition time:', 'color: #3241e5;', diff, 'ms');
+};
+
+/**
+ * Show error if something went wrong during chunk loading
+ */
+const errorLoading = err => console.error('Dynamic page loading failed', err);
+
+/**
+ * Parse loaded module
+ */
+const loadRoute = cb => {
+  onLeave();
+  return module => {
+    calculateTransitionTime();
+    cb(null, module.default);
+  };
+};
 
 export default {
   component: App,
