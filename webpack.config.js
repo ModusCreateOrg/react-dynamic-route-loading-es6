@@ -1,6 +1,5 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -8,7 +7,6 @@ const isProd = nodeEnv === 'production';
 const sourcePath = path.join(__dirname, './client');
 const staticsPath = path.join(__dirname, './static');
 
-const extractCSS = new ExtractTextPlugin({ filename: 'style.css', disable: false, allChunks: true });
 
 const plugins = [
   new webpack.optimize.CommonsChunkPlugin({
@@ -77,12 +75,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        use: isProd ?
-          extractCSS.extract({
-            fallbackLoader: 'style-loader',
-            loader: ['css-loader', 'sass-loader'],
-          }) :
-          ['style-loader', 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.(js|jsx)$/,
