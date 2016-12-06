@@ -17,7 +17,7 @@ export default () => (
   </article>
 );
 
-export const someSillyDataToMakeThisLookHeavy = btoa(`
+export const someSillyDataToMakeThisLookHeavy = `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pretium elit id ex interdum, sagittis tristique libero semper. Proin molestie dictum magna id varius. Maecenas imperdiet odio diam, quis sagittis risus congue vel. Curabitur sit amet dapibus neque. Nulla metus augue, finibus non convallis id, posuere et dui. Duis gravida justo leo, vel tincidunt ex lobortis luctus. Mauris at porttitor lectus. Vestibulum vel sapien luctus, vestibulum neque maximus, gravida velit
 Sed consequat ex eu metus dignissim mattis. Phasellus vel imperdiet nibh. Phasellus vitae facilisis odio. Etiam sit amet dui nec tortor interdum rutrum. Donec nibh lorem, consequat ac convallis sed, vestibulum id enim. Mauris quis luctus metus. Quisque elementum imperdiet risus eget pulvinar. Suspendisse erat tortor, tincidunt a sollicitudin et, eleifend eget quam. Nullam porta, velit ut iaculis convallis, enim leo pellentesque nibh, vitae dictum lorem nulla eu mauris. Vivamus tincidunt, ante id hendrerit tincidunt, magna nisl dictum nibh, eget aliquam urna lacus in metus. Nunc scelerisque lectus dolor, eget ornare dui convallis vitae. Vestibulum scelerisque, ligula a tristique consequat, dui dui pretium ex, malesuada lobortis lectus justo ac lacus
 Pellentesque at lorem enim. Morbi sed magna pharetra magna mattis venenatis mattis at lorem. Sed sem orci, varius at lacus non, rutrum accumsan tortor. Quisque condimentum nec diam in feugiat. Sed lobortis, dui quis molestie bibendum, nunc est cursus massa, non varius purus odio ut risus. Etiam cursus eros mauris, sed porta felis maximus eu. Praesent sagittis a felis quis maximus. In cursus, eros non venenatis commodo, quam purus feugiat justo, ornare vehicula massa justo eget risus
@@ -239,4 +239,6 @@ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
 
 Aenean bibendum massa auctor, cursus lorem ac, pretium est. Duis vitae massa justo. Aliquam sed placerat libero. Mauris dui nisl, vehicula nec diam vitae, vehicula tristique nisl. Nam at dolor ac nunc cursus cursus. Nam finibus venenatis orci. Nullam vulputate urna quis diam viverra vehicula. Morbi nulla felis, egestas in lacus at, dictum accumsan sem.
 
-Duis ac neque sit amet libero dapibus placerat. Maecenas at lorem euismod, laoreet neque vel, gravida nulla. Donec aliquam vulputate ex eu dignissim. Vestibulum vehicula euismod tellus. In hac habitasse platea dictumst. Vestibulum dapibus felis et tincidunt blandit. In tristique nibh sed neque suscipit, mattis euismod nulla vestibulum. Etiam gravida mauris id mi maximus dignissim.`);
+Duis ac neque sit amet libero dapibus placerat. Maecenas at lorem euismod, laoreet neque vel, gravida nulla. Donec aliquam vulputate ex eu dignissim. Vestibulum vehicula euismod tellus. In hac habitasse platea dictumst. Vestibulum dapibus felis et tincidunt blandit. In tristique nibh sed neque suscipit, mattis euismod nulla vestibulum. Etiam gravida mauris id mi maximus dignissim.`;
+
+Array.from(someSillyDataToMakeThisLookHeavy).forEach(btoa);
