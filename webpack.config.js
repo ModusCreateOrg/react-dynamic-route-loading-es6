@@ -70,9 +70,11 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        use: 'file-loader',
-        query: {
-          name: '[name].[ext]'
+        use: {
+          loader: 'file-loader',
+          query: {
+            name: '[name].[ext]'
+          }
         }
       },
       {
