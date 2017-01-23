@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -38,6 +39,18 @@ const plugins = [
   }),
 
   /**
+   * Precache resources using Service Workers
+   */
+  new SWPrecacheWebpackPlugin({
+      cacheId: 'react-dynamic-route-loading-es6',
+      filename: 'my-service-worker.js',
+      runtimeCaching: [{
+        handler: 'cacheFirst',
+        urlPattern: /(.*?)/
+      }],
+    }),
+
+  /**
    * Create a JSON file that contains file names of all chunks
    */
   function() {
@@ -59,7 +72,7 @@ const plugins = [
         cb(null, htmlPluginData);
       });
     });
-  },
+  }
 ];
 
 
@@ -122,7 +135,7 @@ module.exports = {
     rules: [
       {
         test: /\.html$/,
-        use: 'file-loader',
+        loader: 'file-loader',
         query: {
           name: '[name].[ext]'
         }
