@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -19,6 +20,16 @@ const plugins = [
   new webpack.DefinePlugin({
     'process.env': { NODE_ENV: JSON.stringify(nodeEnv) }
   }),
+  new HtmlWebpackPlugin({
+    template: sourcePath + '/index.ejs',
+    production: isProd,
+    inject: true,
+  }),
+];
+
+const jsEntry = [
+  'index',
+  'pages/Home',
 ];
 
 if (isProd) {
@@ -46,16 +57,23 @@ if (isProd) {
     }),
     extractCSS
   );
+
+  jsEntry.unshift(
+    'webpack-dev-server/client?http://localhost:3000',
+    'webpack/hot/only-dev-server'
+  );
+} else {
+  plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin()
+  );
 }
 
 module.exports = {
-  devtool: isProd ? 'source-map' : 'eval',
+  devtool: isProd ? 'source-map' : 'cheap-module-source-map',
   context: sourcePath,
   entry: {
-    js: [
-      'index',
-      'pages/Home'
-    ],
+    js: jsEntry,
     vendor: [
       'react',
       'react-dom'
@@ -116,6 +134,7 @@ module.exports = {
     contentBase: './client',
     historyApiFallback: true,
     port: 3000,
+    hot: true,
     compress: isProd,
     stats: { colors: true },
   }

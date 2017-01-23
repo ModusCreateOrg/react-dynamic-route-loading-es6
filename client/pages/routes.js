@@ -1,3 +1,5 @@
+import React from 'react';
+import { Router, browserHistory } from 'react-router/es6';
 import App from 'containers/App';
 
 function errorLoading(err) {
@@ -8,7 +10,7 @@ function loadRoute(cb) {
   return (module) => cb(null, module.default);
 }
 
-export default {
+const routes = {
   component: App,
   childRoutes: [
     {
@@ -37,3 +39,5 @@ export default {
     },
   ]
 };
+
+export default () => <Router history={browserHistory} routes={routes} />;
