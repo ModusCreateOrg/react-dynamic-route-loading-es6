@@ -1,18 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import Toolbar from 'components/Toolbar';
+import preload from 'utils/preload';
 import './style.scss';
-
-const tag = document.createElement('script');
-tag.async = 1;
-
-const addScript = src => {
-  tag.src = src;
-  document.head.appendChild(tag.cloneNode());
-};
 
 export default class App extends Component {
   componentDidMount() {
-    window.__CHUNKS.forEach(addScript);
+    window.__CHUNKS.forEach(preload);
   }
 
   render() {

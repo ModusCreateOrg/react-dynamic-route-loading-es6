@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const OfflinePlugin = require('offline-plugin');
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
@@ -19,7 +19,6 @@ const plugins = [
   new webpack.optimize.CommonsChunkPlugin({
     name: 'vendor',
     minChunks: Infinity,
-    filename: 'vendor.bundle.js'
   }),
 
   /**
@@ -39,15 +38,31 @@ const plugins = [
   }),
 
   /**
-   * Precache resources using Service Workers
+   * Precache resources using Service Workers, fallback to appcache
    */
-  new SWPrecacheWebpackPlugin({
-    cacheId: 'react-dynamic-route-loading-es6',
-    filename: 'my-service-worker.js',
-    runtimeCaching: [{
-      handler: 'cacheFirst',
-      urlPattern: /(.*?)/
-    }],
+  new OfflinePlugin({
+    relativePaths: false,
+    publicPath: '/',
+    updateStrategy: 'all',
+    version: '[hash]',
+    preferOnline: true,
+    safeToUseOptionalCaches: true,
+    caches: {
+      main: ['core.*.js'],
+      additional: ['chunk.*.js'],
+      optional: [':rest:'],
+    },
+    excludes: [
+      '*_webpack_*',
+    ],
+    ServiceWorker: {
+      navigateFallbackURL: '/',
+      events: true,
+    },
+    AppCache: {
+      FALLBACK: { '/': '/' },
+      caches: ['main', 'additional']
+    },
   }),
 
   /**
@@ -55,7 +70,7 @@ const plugins = [
    */
   function() {
     const compiler = this;
-    const chunkRegEx = /^chunk[.]/;
+    const chunkRegEx = /^chunk[.].*js$/;
     compiler.plugin('compilation', function(compilation) {
       compilation.plugin('html-webpack-plugin-before-html-processing', function(htmlPluginData, cb) {
         // find all chunk file names
@@ -113,10 +128,10 @@ if (isProd) {
 }
 
 module.exports = {
-  devtool: isProd ? 'source-map' : 'eval',
+  devtool: isProd ? 'source-map' : 'cheap-module-source-map',
   context: sourcePath,
   entry: {
-    js: [
+    core: [
       'index',
       'pages/Home'
     ],
@@ -127,8 +142,8 @@ module.exports = {
   },
   output: {
     path: staticsPath,
-    filename: 'bundle.js',
-    chunkFilename: 'chunk.[chunkhash].js',
+    filename: '[name].[chunkhash:8].js',
+    chunkFilename: 'chunk.[chunkhash:8].js',
     publicPath: '/',
   },
   module: {
