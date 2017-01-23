@@ -113,7 +113,6 @@ module.exports = {
   devServer: {
     contentBase: './client',
     historyApiFallback: true,
-    inject: true,
     port: 3000,
     compress: isProd,
     stats: { colors: true },
