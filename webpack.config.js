@@ -42,13 +42,13 @@ const plugins = [
    * Precache resources using Service Workers
    */
   new SWPrecacheWebpackPlugin({
-      cacheId: 'react-dynamic-route-loading-es6',
-      filename: 'my-service-worker.js',
-      runtimeCaching: [{
-        handler: 'cacheFirst',
-        urlPattern: /(.*?)/
-      }],
-    }),
+    cacheId: 'react-dynamic-route-loading-es6',
+    filename: 'my-service-worker.js',
+    runtimeCaching: [{
+      handler: 'cacheFirst',
+      urlPattern: /(.*?)/
+    }],
+  }),
 
   /**
    * Create a JSON file that contains file names of all chunks
@@ -173,7 +173,6 @@ module.exports = {
   devServer: {
     contentBase: './client',
     historyApiFallback: true,
-    inject: true,
     port: 3000,
     compress: isProd,
     stats: {
