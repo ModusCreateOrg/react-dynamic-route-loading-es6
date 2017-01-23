@@ -19,12 +19,11 @@ InitialChunksPlugin.prototype.apply = function(compiler) {
     var stats = compilation.getStats().toJson();
     var entrypoints = stats.entrypoints.js.assets || [];
 
-    // console.log('stats', Object.keys(stats));
-    // console.log('stats', stats.chunks);
-
     var htmlAsset = stats.assets.find(function(asset) {
       return asset.name.match(/[.]html?$/);
     });
+
+    console.log('entrypoints', entrypoints);
 
     if (!htmlAsset) {
       return callback();
@@ -52,7 +51,7 @@ InitialChunksPlugin.prototype.apply = function(compiler) {
       source: fs.readFileAsync(filename, 'utf-8')
     })
     .catch(function() {
-      return Promise.reject(new Error('HtmlWebpackPlugin: could not load file ' + filename));
+      return Promise.reject(new Error('InitialChunksPlugin: could not load file ' + filename));
     })
     .then(function(results) {
       return fs.writeFileAsync(filename, self.injectAssetsIntoHtml(results.source, tags));
