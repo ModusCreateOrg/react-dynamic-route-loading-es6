@@ -98,9 +98,9 @@ module.exports = {
       {
         test: /\.scss$/,
         use: isProd ?
-          extractCSS.extract({
-            fallbackLoader: 'style-loader',
-            loader: ['css-loader', 'sass-loader'],
+          ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: ['css-loader', 'sass-loader'],
           }) :
           ['style-loader', 'css-loader', 'sass-loader']
       },
